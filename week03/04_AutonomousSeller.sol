@@ -32,7 +32,7 @@ contract BalelecTicketSeller {
     }
 
     function BuyTicket() payable public {
-        if (msg.value != price) {
+        if (msg.value != getPrice()) {
             revert WrongAmount(msg.value);
         }
         tickets[msg.sender] = true;
