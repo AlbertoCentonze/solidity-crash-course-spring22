@@ -1,11 +1,15 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.13;
 
-contract BalelecTicketSeller {
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./myNft.sol";
+
+contract BalelecTicketSeller is Ownable{
     uint public immutable price;
     uint public immutable priceAfterThreshold;
     uint public immutable threshold;
-    uint public ticketsCounter = 0; 
+    uint public ticketsCounter = 0;
+    address public nftAddress;
     mapping(address => bool) public tickets;
     event Purchase(address buyer);
 
@@ -37,6 +41,12 @@ contract BalelecTicketSeller {
         }
         tickets[msg.sender] = true;
         emit Purchase(msg.sender);
+        BalelecTickets myNFT = BalelecTickets(nftAddress);
+        myNFT.safeMint(msg.sender, ticketsCounter);
         ++ticketsCounter;
+    }
+
+    function setNftAddress(address newAddress) public onlyOwner{
+        nftAddress = newAddress;
     }
 }
